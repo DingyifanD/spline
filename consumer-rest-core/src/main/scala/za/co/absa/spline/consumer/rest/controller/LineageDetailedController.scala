@@ -21,6 +21,7 @@ import java.util.UUID
 import io.swagger.annotations.{Api, ApiOperation, ApiParam}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation._
+import za.co.absa.spline.consumer.service.AttributeDependencySolver
 import za.co.absa.spline.consumer.service.model.{AttributeDependencies, ExecutionPlanInfo, LineageDetailed}
 import za.co.absa.spline.consumer.service.repo.ExecutionPlanRepository
 
@@ -53,6 +54,8 @@ class LineageDetailedController @Autowired()(
     @ApiParam(value = "Attribute ID")
     @RequestParam("attributeId") attributeId: UUID
   ): Future[AttributeDependencies] = {
-      repo.findAttributeDependencies(execId,attributeId)
+      repo.findAttributeDependencies(execId, attributeId).map{ operations =>
+        AttributeDependencySolver.resolveDependencies(operations, attributeId)
+      }
   }
 }

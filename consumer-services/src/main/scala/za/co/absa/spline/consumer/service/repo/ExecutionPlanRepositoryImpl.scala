@@ -19,6 +19,7 @@ package za.co.absa.spline.consumer.service.repo
 import com.arangodb.ArangoDatabaseAsync
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import za.co.absa.spline.consumer.service.internal.model.Operation
 import za.co.absa.spline.consumer.service.model.ExecutionPlanInfo.Id
 import za.co.absa.spline.consumer.service.model.{AttributeDependencies, LineageDetailed}
 
@@ -91,7 +92,8 @@ class ExecutionPlanRepositoryImpl @Autowired()(db: ArangoDatabaseAsync) extends 
     ).filter(null.!=)
   }
 
-  override def findAttributeDependencies(execId: Id, attributeId: Id)(implicit ec: ExecutionContext): Future[AttributeDependencies] =
+  override def findAttributeDependencies(execId: Id, attributeId: Id)(implicit ec: ExecutionContext): Future[Array[Operation]] =
+    /*
     db.queryOne[AttributeDependencies](
       """
         LET plan = FIRST(FOR ex IN executionPlan FILTER ex._key == @execId RETURN ex)
@@ -105,4 +107,30 @@ class ExecutionPlanRepositoryImpl @Autowired()(db: ArangoDatabaseAsync) extends 
       """,
       Map("execId" -> execId, "attributeId" -> attributeId)
     )
+    */
+
+    db.queryOne[Array[Operation]]("""
+      //LET execId = "f813d050-fa2f-4bfb-8008-4fa4cced407b"
+
+      LET exec = FIRST(FOR ex IN executionPlan FILTER ex._key == @execId RETURN ex)
+      LET writeOp = FIRST(FOR v IN 1 OUTBOUND exec executes RETURN v)
+
+
+      LET opsWithInboundEdges = (
+        FOR vi, ei IN 0..99999
+        OUTBOUND writeOp follows
+        COLLECT v = vi INTO edgesByVertex
+        LET children = UNIQUE(edgesByVertex[* FILTER NOT_NULL(CURRENT.ei)].ei)[*]._from
+        LET trimmedChildren = (FOR ch IN children RETURN LTRIM(ch, "operation/"))
+        RETURN {
+          "_id": v._key,
+          "schema": v.outputSchema,
+          "extra": v.extra,
+          "params": v.params,
+          "childIds": trimmedChildren
+        }
+      )
+
+      RETURN opsWithInboundEdges
+    """, Map("execId" -> execId))
 }

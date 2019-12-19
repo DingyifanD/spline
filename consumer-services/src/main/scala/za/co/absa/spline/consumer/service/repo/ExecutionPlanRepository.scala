@@ -18,6 +18,7 @@ package za.co.absa.spline.consumer.service.repo
 
 import java.util.UUID
 
+import za.co.absa.spline.consumer.service.internal.model.Operation
 import za.co.absa.spline.consumer.service.model.ExecutionPlanInfo.Id
 import za.co.absa.spline.consumer.service.model.{AttributeDependencies, LineageDetailed}
 
@@ -26,5 +27,5 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ExecutionPlanRepository {
   def findById(execId: Id)(implicit ec: ExecutionContext): Future[LineageDetailed]
 
-  def findAttributeDependencies(execId: Id, attributeId: UUID)(implicit ec: ExecutionContext): Future[AttributeDependencies]
+  def findAttributeDependencies(execId: Id, attributeId: UUID)(implicit ec: ExecutionContext): Future[Array[Operation]]
 }
