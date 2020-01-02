@@ -15,7 +15,8 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>za.co.absa.spline</groupId>
@@ -97,6 +98,7 @@
         <scala.compat.version>2.11</scala.compat.version>
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <json4s.version>3.6.7</json4s.version>
         <spring.version>5.2.2.RELEASE</spring.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
         <jackson.version>2.10.1</jackson.version>
@@ -261,33 +263,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>spark-2.2</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <spark.compat.version>2.2</spark.compat.version>
-                <spark.version>2.2.2</spark.version>
-                <json4s.version>${json4s-32.version}</json4s.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>spark-2.3</id>
-            <properties>
-                <spark.compat.version>2.3</spark.compat.version>
-                <spark.version>2.3.2</spark.version>
-                <json4s.version>${json4s-32.version}</json4s.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>spark-2.4</id>
-            <properties>
-                <spark.compat.version>2.4</spark.compat.version>
-                <spark.version>2.4.2</spark.version>
-                <json4s.version>${json4s-35.version}</json4s.version>
-            </properties>
-        </profile>
         <profile>
             <id>license-check</id>
             <build>
@@ -472,31 +447,6 @@
                 <groupId>org.scalaz</groupId>
                 <artifactId>scalaz-core_${scala.compat.version}</artifactId>
                 <version>7.2.29</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-core_${scala.compat.version}</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-sql_${scala.compat.version}</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-hive_${scala.compat.version}</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-sql-kafka-0-10_${scala.compat.version}</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.databricks</groupId>
-                <artifactId>spark-xml_${scala.compat.version}</artifactId>
-                <version>0.4.1</version>
             </dependency>
 
             <!-- Json4s -->
